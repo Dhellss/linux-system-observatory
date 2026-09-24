@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Linux System Observatory
+GenericName=System Monitor
+Comment=Monitor processor, memory, graphics, storage, network and sensors
+Exec=observatory
+Icon=utilities-system-monitor
+Terminal=false
+Categories=System;Monitor;Utility;
+Keywords=system;monitor;process;task;manager;cpu;memory;gpu;disk;network;sensors;
+StartupNotify=true
+StartupWMClass=observatory

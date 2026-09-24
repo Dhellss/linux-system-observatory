@@ -1,0 +1,5 @@
+# Runtime dependencies.
+# Install with:  python -m pip install -r requirements.txt
+PySide6>=6.6
+psutil>=5.9
+pyqtgraph>=0.13

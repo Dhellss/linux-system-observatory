@@ -1,0 +1,6 @@
+# Development dependencies, in addition to requirements.txt.
+-r requirements.txt
+pytest>=8.0
+pytest-cov>=5.0
+ruff>=0.6
+mypy>=1.11
