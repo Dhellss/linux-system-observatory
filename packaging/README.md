@@ -52,8 +52,9 @@ password ever passes through this program.
 ## Distribution packaging
 
 The project is a standard PEP 517 package. Distribution maintainers can build a
-wheel with `python -m build` and depend on the system's own `python-pyside6`,
-`python-psutil` and `python-pyqtgraph` packages rather than vendoring them.
+wheel with `python -m build` and depend on the system's own PySide6, psutil
+and pyqtgraph packages rather than vendoring them. Package names vary: PySide6
+is `pyside6` on Arch and `python3-pyside6.*` on Debian derivatives.
 
 Recommended optional runtime dependencies, each of which unlocks additional
 metrics and all of which degrade gracefully when absent:

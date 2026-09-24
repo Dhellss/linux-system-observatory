@@ -50,8 +50,11 @@ Installing PySide6 from your distribution rather than PyPI is recommended.
 
 **Arch Linux**
 ```bash
-sudo pacman -S python-pyside6 python-psutil python-pyqtgraph
+sudo pacman -S --needed pyside6 python-psutil python-pyqtgraph
 ```
+
+Note that the PySide6 package is named `pyside6` on Arch, not
+`python-pyside6` as on most other distributions.
 
 **Debian / Ubuntu**
 ```bash
