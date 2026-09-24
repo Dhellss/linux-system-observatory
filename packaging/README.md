@@ -2,13 +2,36 @@
 
 ## Desktop entry
 
-Install `observatory.desktop` so the application appears in the desktop menu:
+`observatory.desktop` declares `Exec=observatory`, which is correct only once
+the project has been installed and the console script is on `PATH`. For an
+installed copy:
 
 ```bash
 install -Dm644 packaging/observatory.desktop \
     ~/.local/share/applications/observatory.desktop
 update-desktop-database ~/.local/share/applications
 ```
+
+When running from a checkout, use the installer instead — it writes an `Exec`
+line that matches how the application can actually be launched on that machine:
+
+```bash
+python tools/install_desktop_entry.py            # install
+python tools/install_desktop_entry.py --dry-run  # preview
+python tools/install_desktop_entry.py --uninstall
+```
+
+Installing the entry also silences a start-up warning. `main.py` calls
+`setDesktopFileName("observatory")`, so the XDG desktop portal looks for
+`observatory.desktop`; without it Qt logs:
+
+```
+qt.qpa.services: Failed to register with host portal ...
+Could not register app ID: App info not found for 'observatory'
+```
+
+The warning is harmless — portal registration only affects integrations such as
+the native file chooser and screen sharing — but it appears on every launch.
 
 ## Optional privilege escalation for SMART
 

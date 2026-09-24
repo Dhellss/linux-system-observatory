@@ -17,6 +17,13 @@ python -m venv --system-site-packages .venv
 .venv/bin/python run.py
 ```
 
+To add it to your application menu (and silence the portal warning described
+under Troubleshooting):
+
+```bash
+.venv/bin/python tools/install_desktop_entry.py
+```
+
 `--system-site-packages` lets the virtual environment reuse a distribution's
 PySide6 build, which is usually better integrated with the desktop than the
 wheel from PyPI. Omit it for a fully isolated environment.
@@ -126,6 +133,12 @@ appearance but is not required.
 **High CPU use.** Open Diagnostics to see the per-collector breakdown, then
 raise the interval of the expensive one in Settings. The `processes` and
 `services` collectors dominate on most systems.
+
+**`Failed to register with host portal` / `App info not found for 'observatory'`.**
+Harmless. The application tells Qt its desktop file is `observatory.desktop`;
+if no such entry is installed, portal registration fails. It only affects
+integrations such as the native file chooser. Install the entry to stop it:
+`python tools/install_desktop_entry.py`
 
 **No GPU data.** Diagnostics reports which driver interface is missing. A
 common cause is an Intel adapter bound to `simple-framebuffer` because `i915`
