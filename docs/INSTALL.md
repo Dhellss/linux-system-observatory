@@ -4,13 +4,13 @@
 
 - Linux with a 4.20 or newer kernel (older kernels work; PSI pressure metrics
   need 4.20+)
-- Python 3.11 or newer
+- Python 3.11 or newer (developed and tested on 3.14)
 - A Qt-capable desktop session (X11 or Wayland)
 
 ## From source
 
 ```bash
-git clone <repository-url> linux-system-observatory
+git clone https://github.com/<your-username>/linux-system-observatory.git
 cd linux-system-observatory
 python -m venv --system-site-packages .venv
 .venv/bin/pip install -r requirements.txt

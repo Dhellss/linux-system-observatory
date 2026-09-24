@@ -60,10 +60,12 @@ core**, with the GUI thread's frame budget never exceeded.
 
 ## Installation
 
-Requires Python 3.11 or newer.
+Requires Python 3.11 or newer. Developed and tested on Python 3.14; the 3.11
+floor reflects the language features used (no PEP 695 syntax) but has not been
+exercised in CI yet.
 
 ```bash
-git clone <repository-url> linux-system-observatory
+git clone https://github.com/<your-username>/linux-system-observatory.git
 cd linux-system-observatory
 python -m venv --system-site-packages .venv
 .venv/bin/pip install -r requirements.txt
