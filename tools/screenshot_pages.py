@@ -26,17 +26,16 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from PySide6.QtCore import QTimer  # noqa: E402
-from PySide6.QtWidgets import QApplication  # noqa: E402
-
-from app import bootstrap  # noqa: E402
-from app.core.config import ConfigService  # noqa: E402
-from app.core.logging_setup import configure  # noqa: E402
-from app.services.history import HistoryService  # noqa: E402
-from app.services.monitor import MonitorService  # noqa: E402
-from app.ui.main_window import PAGE_CLASSES, MainWindow  # noqa: E402
-from app.ui.themes.stylesheet import build as build_stylesheet  # noqa: E402
-from app.ui.themes.tokens import Theme  # noqa: E402
+from app import bootstrap
+from app.core.config import ConfigService
+from app.core.logging_setup import configure
+from app.services.history import HistoryService
+from app.services.monitor import MonitorService
+from app.ui.main_window import PAGE_CLASSES, MainWindow
+from app.ui.themes.stylesheet import build as build_stylesheet
+from app.ui.themes.tokens import Theme
+from PySide6.QtCore import QTimer
+from PySide6.QtWidgets import QApplication
 
 #: Seconds to let collectors warm up before touring, so pages show real data.
 WARMUP_SECONDS = 6.0
@@ -96,7 +95,7 @@ def main() -> int:
             for _ in range(4):
                 application.processEvents()
             window.grab().save(str(out_dir / f"{position:02d}_{name}.png"))
-        except Exception:  # noqa: BLE001 - reporting is the whole point
+        except Exception:
             failures.append((name, traceback.format_exc()))
         state["index"] += 1
 

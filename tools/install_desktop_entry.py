@@ -32,6 +32,7 @@ Usage::
 from __future__ import annotations
 
 import argparse
+import contextlib
 import os
 import shutil
 import subprocess
@@ -91,13 +92,11 @@ def refresh_menu(directory: Path) -> None:
     """Ask the desktop to re-read its application database, if it can."""
     if not shutil.which("update-desktop-database"):
         return
-    try:
-        subprocess.run(  # noqa: S603 - fixed argv, no shell
+    with contextlib.suppress(OSError, subprocess.SubprocessError):
+        subprocess.run(
             ["update-desktop-database", str(directory)],
             check=False, capture_output=True, timeout=15,
         )
-    except (OSError, subprocess.SubprocessError):
-        pass
 
 
 def main() -> int:

@@ -38,7 +38,7 @@ jobs:
           python -m pip install -r requirements-dev.txt
 
       - name: Lint
-        run: ruff check app tests
+        run: ruff check app tests tools
 
       - name: Type check
         run: mypy app
