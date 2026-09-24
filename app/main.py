@@ -37,6 +37,60 @@ ORGANISATION = "observatory"
 VERSION = "1.0.0"
 
 
+#: Third-party runtime requirements, with the hint shown when one is missing
+#: or present-but-unimportable.  Package names differ per distribution, so the
+#: hint names the PyPI distribution and the two spellings most users will meet.
+_REQUIREMENTS: tuple[tuple[str, str, str], ...] = (
+    ("PySide6", "PySide6", "pyside6 (Arch) / python3-pyside6.qtwidgets (Debian)"),
+    ("psutil", "psutil", "python-psutil (Arch) / python3-psutil (Debian)"),
+    ("pyqtgraph", "pyqtgraph", "python-pyqtgraph (Arch) / python3-pyqtgraph (Debian)"),
+)
+
+
+def check_dependencies() -> list[str]:
+    """Return a human-readable problem per unusable runtime dependency.
+
+    Importing a dependency can fail in two quite different ways, and a user
+    deserves to be told which:
+
+    * the package is genuinely absent, or
+    * the package is installed but *its own* imports fail -- which happens when
+      a distribution ships it with an under-declared dependency list.
+
+    The second case is not hypothetical. Arch's ``python-pyqtgraph`` declares
+    only ``python`` and ``python-numpy``, yet ``pyqtgraph.util.cprint`` imports
+    ``colorama`` unconditionally at module scope even though it is only used on
+    Windows. Without this check the application dies on a bare traceback from
+    deep inside a third-party module, which tells the user nothing actionable.
+    """
+    import importlib
+
+    problems: list[str] = []
+    for module_name, distribution, packages in _REQUIREMENTS:
+        try:
+            importlib.import_module(module_name)
+        except ImportError as exc:
+            missing = getattr(exc, "name", "") or ""
+            if missing and missing.split(".")[0] != module_name:
+                problems.append(
+                    f"{distribution} is installed but cannot be imported: it "
+                    f"needs {missing!r}, which is not available.\n"
+                    f"    Install it, for example:  "
+                    f"sudo pacman -S python-{missing}   (Arch)\n"
+                    f"                              "
+                    f"pip install {missing}            (any distribution)"
+                )
+            else:
+                problems.append(
+                    f"{distribution} is not installed.\n"
+                    f"    Install it with your package manager: {packages}\n"
+                    f"    Or:  pip install {distribution}"
+                )
+        except Exception as exc:
+            problems.append(f"{distribution} failed to load: {exc}")
+    return problems
+
+
 def parse_arguments(argv: list[str] | None = None) -> argparse.Namespace:
     """Parse command-line arguments."""
     parser = argparse.ArgumentParser(
@@ -77,6 +131,18 @@ def main(argv: list[str] | None = None) -> int:
     arguments = parse_arguments(argv)
     configure(logging.DEBUG if arguments.debug else logging.INFO)
     _log.info("%s %s starting", APPLICATION_NAME, VERSION)
+
+    # Checked before anything else imports Qt, so a packaging problem produces
+    # an actionable message rather than a traceback from inside a dependency.
+    if problems := check_dependencies():
+        print(
+            f"\n{APPLICATION_NAME} cannot start: "
+            f"{len(problems)} dependency problem(s).\n",
+            file=sys.stderr,
+        )
+        for problem in problems:
+            print(f"  - {problem}\n", file=sys.stderr)
+        return 1
 
     application = QApplication(sys.argv[:1])
     application.setApplicationName(APPLICATION_NAME)

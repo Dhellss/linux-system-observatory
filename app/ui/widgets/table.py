@@ -14,7 +14,7 @@ from __future__ import annotations
 
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass
-from typing import Any, Generic, TypeVar
+from typing import Any, Generic, TypeAlias, TypeVar
 
 from PySide6.QtCore import (
     QAbstractTableModel,
@@ -33,7 +33,7 @@ T = TypeVar("T")
 #: Qt declares these overrides as accepting either index flavour, so the
 #: signatures below must too -- narrowing them to QModelIndex violates the
 #: Liskov substitution principle and a type checker with Qt stubs will say so.
-Index = QModelIndex | QPersistentModelIndex
+Index: TypeAlias = QModelIndex | QPersistentModelIndex
 
 #: Custom role carrying the raw, unformatted value used for sorting.
 #: Qt calls these overrides with an invalid index for top-level items.  A

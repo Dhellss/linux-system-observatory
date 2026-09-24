@@ -50,11 +50,18 @@ Installing PySide6 from your distribution rather than PyPI is recommended.
 
 **Arch Linux**
 ```bash
-sudo pacman -S --needed pyside6 python-psutil python-pyqtgraph
+sudo pacman -S --needed pyside6 python-psutil python-pyqtgraph python-colorama
 ```
 
-Note that the PySide6 package is named `pyside6` on Arch, not
-`python-pyside6` as on most other distributions.
+Two Arch-specific notes:
+
+- The PySide6 package is named `pyside6`, not `python-pyside6` as on most
+  other distributions.
+- `python-colorama` is required even though `python-pyqtgraph` does not
+  declare it. `pyqtgraph.util.cprint` imports `colorama` unconditionally at
+  module scope although it only uses it on Windows, so importing pyqtgraph
+  fails without it. The application detects this at start-up and tells you
+  what to install rather than failing with a traceback.
 
 **Debian / Ubuntu**
 ```bash
@@ -142,6 +149,10 @@ Harmless. The application tells Qt its desktop file is `observatory.desktop`;
 if no such entry is installed, portal registration fails. It only affects
 integrations such as the native file chooser. Install the entry to stop it:
 `python tools/install_desktop_entry.py`
+
+**`pyqtgraph is installed but cannot be imported: it needs 'colorama'`.**
+Install it: `sudo pacman -S python-colorama` on Arch, or `pip install
+colorama` anywhere. See the Arch note under "Distribution dependencies".
 
 **No GPU data.** Diagnostics reports which driver interface is missing. A
 common cause is an Intel adapter bound to `simple-framebuffer` because `i915`

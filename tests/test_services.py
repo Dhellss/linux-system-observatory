@@ -285,3 +285,49 @@ class TestMetricRegistry:
             "processes", "sensors", "battery", "services",
         }
         assert expected <= domains
+
+
+class TestDependencyPreflight:
+    """The start-up dependency check.
+
+    A packaging problem in a third-party module should produce an actionable
+    message, not a traceback from deep inside that module.
+    """
+
+    def test_reports_nothing_when_everything_imports(self) -> None:
+        """A healthy environment yields no problems."""
+        from app.main import check_dependencies
+
+        assert check_dependencies() == []
+
+    def test_distinguishes_absent_from_broken(self, monkeypatch) -> None:
+        """A package installed but unimportable is described differently.
+
+        Arch's python-pyqtgraph omits its colorama dependency, so pyqtgraph
+        exists yet fails on its own internal import. That is a different
+        problem from pyqtgraph being absent, and the user needs to be told
+        which one they have.
+        """
+        import importlib
+
+        from app.main import check_dependencies
+
+        real_import = importlib.import_module
+
+        def fake_import(name: str, *args, **kwargs):
+            if name == "pyqtgraph":
+                raise ImportError("No module named 'colorama'", name="colorama")
+            if name == "psutil":
+                raise ImportError("No module named 'psutil'", name="psutil")
+            return real_import(name, *args, **kwargs)
+
+        monkeypatch.setattr(importlib, "import_module", fake_import)
+        problems = check_dependencies()
+
+        joined = "\n".join(problems)
+        assert "pyqtgraph is installed but cannot be imported" in joined
+        assert "needs 'colorama'" in joined
+        assert "python-colorama" in joined
+        assert "psutil is not installed" in joined
+        # PySide6 imports fine, so it must not be reported.
+        assert "PySide6" not in joined
