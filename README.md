@@ -65,7 +65,7 @@ floor reflects the language features used (no PEP 695 syntax) but has not been
 exercised in CI yet.
 
 ```bash
-git clone https://github.com/<your-username>/linux-system-observatory.git
+git clone https://github.com/Dhellss/linux-system-observatory.git
 cd linux-system-observatory
 python -m venv --system-site-packages .venv
 .venv/bin/pip install -r requirements.txt

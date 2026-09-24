@@ -10,7 +10,7 @@
 ## From source
 
 ```bash
-git clone https://github.com/<your-username>/linux-system-observatory.git
+git clone https://github.com/Dhellss/linux-system-observatory.git
 cd linux-system-observatory
 python -m venv --system-site-packages .venv
 .venv/bin/pip install -r requirements.txt
