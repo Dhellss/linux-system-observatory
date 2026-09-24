@@ -403,8 +403,11 @@ class MainWindow(QMainWindow):
             density=settings.density,
             font_scale=settings.font_scale,
         )
+        # instance() is declared to return QCoreApplication, which has no
+        # stylesheet support; only a QApplication does. In a GUI process it
+        # always is one, but narrowing keeps that assumption explicit.
         application = QApplication.instance()
-        if application is not None:
+        if isinstance(application, QApplication):
             application.setStyleSheet(build(theme))
         self.show_message(
             "Theme applied. Restart to restyle charts and gauges as well."

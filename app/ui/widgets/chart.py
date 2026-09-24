@@ -67,7 +67,7 @@ class ByteAxis(pg.AxisItem):
 
 def _pen(colour: str, width: float) -> QPen:
     """Build a cosmetic pen, which keeps line width constant under transforms."""
-    pen = pg.mkPen(colour, width=width)
+    pen: QPen = pg.mkPen(colour, width=width)
     pen.setCosmetic(True)
     return pen
 

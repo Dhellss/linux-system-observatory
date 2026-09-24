@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections.abc import Callable
 from dataclasses import dataclass
 
-from PySide6.QtCore import QEvent, Qt, Signal
+from PySide6.QtCore import QEvent, QObject, Qt, Signal
 from PySide6.QtGui import QKeyEvent
 from PySide6.QtWidgets import (
     QButtonGroup,
@@ -481,7 +481,7 @@ class CommandPalette(QWidget):
                 command.handler()
                 return
 
-    def eventFilter(self, watched: object, event: QEvent) -> bool:
+    def eventFilter(self, watched: QObject, event: QEvent) -> bool:
         """Route arrow keys and Enter from the input to the list."""
         if event.type() == QEvent.Type.KeyPress and isinstance(event, QKeyEvent):
             key = event.key()

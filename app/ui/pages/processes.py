@@ -325,7 +325,13 @@ class ProcessesPage(Page):
         self._tree.addTopLevelItems(roots)
 
         # Restore expansion.
-        def restore(item: QTreeWidgetItem) -> None:
+        def restore(item: QTreeWidgetItem | None) -> None:
+            # Qt returns None for an out-of-range index. The loops below are
+            # bounded by the reported counts so it should not happen, but the
+            # tree is rebuilt while the model is changing underneath, and
+            # recursing into None would take the whole page down.
+            if item is None:
+                return
             pid = item.data(0, Qt.ItemDataRole.UserRole)
             if pid in self._expanded:
                 item.setExpanded(True)

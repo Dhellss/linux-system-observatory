@@ -126,7 +126,12 @@ class DiagnosticsPage(Page):
         )
 
         while self._findings_layout.count():
+            # takeAt returns None once the layout is empty; count() guards that
+            # here, but the null check keeps the teardown safe if the layout is
+            # mutated concurrently.
             item = self._findings_layout.takeAt(0)
+            if item is None:
+                break
             if (widget := item.widget()) is not None:
                 widget.deleteLater()
 

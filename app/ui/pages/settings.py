@@ -105,16 +105,19 @@ class SettingsPage(Page):
         decimals: int = 0, hint: str = "",
     ) -> QWidget:
         """Add a numeric spin box bound to a settings key."""
+        box: QDoubleSpinBox | QSpinBox
         if decimals:
             box = QDoubleSpinBox()
             box.setDecimals(decimals)
             box.setSingleStep(step)
+            box.setRange(minimum, maximum)
+            box.setValue(float(self.context.config.get(key, minimum)))
         else:
             box = QSpinBox()
             box.setSingleStep(int(step))
-        box.setRange(minimum, maximum)  # type: ignore[arg-type]
+            box.setRange(int(minimum), int(maximum))
+            box.setValue(int(self.context.config.get(key, minimum)))
         box.setSuffix(suffix)
-        box.setValue(self.context.config.get(key, minimum))
         box.valueChanged.connect(lambda value: self.context.config.set(key, value))
         if hint:
             box.setToolTip(hint)

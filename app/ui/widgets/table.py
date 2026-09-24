@@ -19,6 +19,7 @@ from typing import Any, Generic, TypeVar
 from PySide6.QtCore import (
     QAbstractTableModel,
     QModelIndex,
+    QPersistentModelIndex,
     QSortFilterProxyModel,
     Qt,
 )
@@ -28,6 +29,11 @@ from PySide6.QtWidgets import QAbstractItemView, QHeaderView, QTableView, QWidge
 from app.ui.themes.tokens import Theme
 
 T = TypeVar("T")
+
+#: Qt declares these overrides as accepting either index flavour, so the
+#: signatures below must too -- narrowing them to QModelIndex violates the
+#: Liskov substitution principle and a type checker with Qt stubs will say so.
+Index = QModelIndex | QPersistentModelIndex
 
 #: Custom role carrying the raw, unformatted value used for sorting.
 #: Qt calls these overrides with an invalid index for top-level items.  A
@@ -88,11 +94,11 @@ class ObjectTableModel(QAbstractTableModel, Generic[T]):
 
     # ------------------------------------------------------------ Qt model API
 
-    def rowCount(self, parent: QModelIndex = _NO_PARENT) -> int:
+    def rowCount(self, parent: Index = _NO_PARENT) -> int:
         """Number of rows."""
         return 0 if parent.isValid() else len(self._rows)
 
-    def columnCount(self, parent: QModelIndex = _NO_PARENT) -> int:
+    def columnCount(self, parent: Index = _NO_PARENT) -> int:
         """Number of columns."""
         return 0 if parent.isValid() else len(self._columns)
 
@@ -109,7 +115,7 @@ class ObjectTableModel(QAbstractTableModel, Generic[T]):
             return self._columns[section].title
         return None
 
-    def data(self, index: QModelIndex, role: int = Qt.ItemDataRole.DisplayRole) -> Any:
+    def data(self, index: Index, role: int = Qt.ItemDataRole.DisplayRole) -> Any:
         """Cell data for each requested role."""
         if not index.isValid():
             return None
@@ -203,7 +209,7 @@ class FilterProxy(QSortFilterProxyModel):
         self.invalidateFilter()
 
     def filterAcceptsRow(
-        self, source_row: int, source_parent: QModelIndex
+        self, source_row: int, source_parent: Index
     ) -> bool:
         """Accept a row when it satisfies both the predicate and the search."""
         model = self.sourceModel()

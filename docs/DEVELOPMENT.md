@@ -11,10 +11,31 @@ is the point of the layering described in [ARCHITECTURE.md](ARCHITECTURE.md).
 python -m venv --system-site-packages .venv
 .venv/bin/pip install -r requirements-dev.txt
 
-.venv/bin/python run.py              # run
-.venv/bin/python -m pytest           # test (no display server needed)
-.venv/bin/ruff check app tests       # lint
-.venv/bin/mypy app                   # type check
+.venv/bin/python run.py                    # run
+.venv/bin/python -m pytest                 # test (no display server needed)
+.venv/bin/ruff check app tests tools       # lint
+.venv/bin/mypy app                         # type check
+```
+
+### A caveat about `mypy` and `--system-site-packages`
+
+`--system-site-packages` lets the environment reuse a distribution's PySide6,
+which is usually better integrated with the desktop. It has one trap worth
+knowing about: some distribution packages ship **without the PySide6 type
+stubs**, so `mypy` cannot see any Qt signature and silently skips every check
+that depends on one. It reports success while verifying far less than it
+appears to.
+
+This is not hypothetical. A local run reported "no issues in 90 source files"
+while CI -- which installs PySide6 from PyPI, stubs included -- found twelve
+errors, three of them latent `None`-dereference crashes in real code paths.
+
+CI is therefore the authority on types. To reproduce it exactly before pushing:
+
+```bash
+python -m venv /tmp/ci-check          # note: NO --system-site-packages
+/tmp/ci-check/bin/pip install PySide6 psutil pyqtgraph mypy ruff pytest
+/tmp/ci-check/bin/mypy app
 ```
 
 Useful flags while developing:
