@@ -9,7 +9,7 @@ no network access unless you explicitly ask for a latency probe.
 
 ---
 
-## What it monitors
+## What it monitor
 
 | Page | Highlights |
 | --- | --- |
