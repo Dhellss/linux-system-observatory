@@ -7,6 +7,13 @@ hardware inventory of `inxi`, behind one modern Qt interface.
 Everything stays on your machine. No telemetry, no analytics, no update check,
 no network access unless you explicitly ask for a latency probe.
 
+![The Observatory dashboard: a customisable widget grid showing processor,
+memory, graphics, storage, network, temperatures, battery, system details and
+processes at a glance](docs/screenshots/dashboard.png)
+
+*The dashboard. Every widget can be reordered, resized or swapped out — there
+are 15 to choose from.*
+
 ---
 
 ## What it monitor
